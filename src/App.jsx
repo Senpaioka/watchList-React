@@ -19,10 +19,16 @@ export default function App() {
   const [selectedID, setSelectedID] = useState(null)
   
   // const [watched, setWatched] = useState([]);
-  const [watched, setWatched] = useState(function() {
-    const storedValue = localStorage.getItem('watched');
-    return JSON.parse(storedValue);
-  });
+
+  // const [watched, setWatched] = useState(function() {
+  //   const storedValue = localStorage.getItem('watched');
+  //   return JSON.parse(storedValue);
+  // });
+
+  const [watched, setWatched] = useState(function () {
+  const storedValue = localStorage.getItem("watched");
+  return storedValue ? JSON.parse(storedValue) : [];
+});
 
   function handleSelectMovie(id) {
     setSelectedID(selectedID => id === selectedID ? null : id)
@@ -61,14 +67,14 @@ export default function App() {
       try {
         setIsLoading(true)
         setError('')
-        const response = await fetch(`http://www.omdbapi.com/?apikey=${KEY}&s=${query}`, {signal: controller.signal});
+        const response = await fetch(`https://www.omdbapi.com/?apikey=${KEY}&s=${query}`, {signal: controller.signal});
         if(!response.ok) throw new Error("Something Went Wrong !!")
         const data = await response.json()
         if(data.Response === 'False') throw new Error("Movie Not Found")
         setMovies(data.Search)
         setError('')
       } catch (err) {
-        console.log(err.message)
+        // console.log(err.message)
         if (err.name !== "AbortError"){
           setError(err.message)
         }
@@ -91,8 +97,7 @@ export default function App() {
       controller.abort();
     }
 
-  }, [query])
-  
+  }, [query])  
 
   return (
     <>
@@ -304,7 +309,7 @@ function WatchedMovieList({watched, onDelete}) {
 
   return (
     <ul className="list">
-      {watched.map((movie) => (
+      {watched?.map((movie) => (
         <li key={movie.imdbID}>
           <img src={movie.Poster} alt={`${movie.Title} poster`} />
           <h3>{movie.Title}</h3>
@@ -373,7 +378,7 @@ function MovieDetails({movieId, onCloseDetails, onAddWatched, watched}) {
   useEffect(() => {
     async function getMovieDetails() {
        setIsLoading(true)
-       const response = await fetch(`http://www.omdbapi.com/?apikey=${KEY}&i=${movieId}`);
+       const response = await fetch(`https://www.omdbapi.com/?apikey=${KEY}&i=${movieId}`);
        const data = await response.json()
        setMovie(data)
        setIsLoading(false)
@@ -400,7 +405,10 @@ function MovieDetails({movieId, onCloseDetails, onAddWatched, watched}) {
       <>
       <header>
         <button className="btn-back" onClick={onCloseDetails}>&larr;</button>
+        {
+        Poster &&
         <img src={Poster} alt={`Poster of ${Title} movie`} />
+        }
 
         <div className="details-overview">
           <h2>{Title}</h2>
