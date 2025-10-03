@@ -15,7 +15,7 @@ function TextExpender({collapsedNumWords=20, expendButtonText="Show More", colla
 
     // functionality
     const [isExpanded, setExpanded] = useState(expanded)
-    const displayText = isExpanded ? children : children.split(' ').slice(0, collapsedNumWords).join(' ')+'...';
+    const displayText = isExpanded ? children : children?.split(' ').slice(0, collapsedNumWords).join(' ')+'...';
 
     function handleExpand() {
         setExpanded(!isExpanded)

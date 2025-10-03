@@ -425,7 +425,7 @@ function MovieDetails({movieId, onCloseDetails, onAddWatched, watched}) {
             : <p>You rated this movie {userWatchedRating}⭐</p>        
           }
         </div>
-        <p><em>{Plot}</em></p>
+        <TextExpender>{Plot}</TextExpender>
         <p>Starring {Actors}</p>
         <p>Directed by {Director}</p>
       </section>
